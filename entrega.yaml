@@ -1,0 +1,121 @@
+# ----------------------------------------------------------
+# 1. Namespace
+# ----------------------------------------------------------
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-matias-cordon
+  labels:
+    alumno: matias-cordon
+    lab: "3"
+
+---
+# ----------------------------------------------------------
+# 2. ConfigMap
+# ----------------------------------------------------------
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-matias-cordon
+  namespace: ns-matias-cordon
+data:
+  AMBIENTE: "produccion"
+
+---
+# ----------------------------------------------------------
+# 3. Secret
+# ----------------------------------------------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-matias-cordon
+  namespace: ns-matias-cordon
+type: Opaque
+data:
+  API_KEY: czNjcjN0LW1hdGlhcy1jb3Jkb24=
+
+---
+# ----------------------------------------------------------
+# 4. Deployment
+# ----------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-matias-cordon
+  namespace: ns-matias-cordon
+  labels:
+    app: matias-cordon
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: matias-cordon       
+  template:
+    metadata:
+      labels:
+        app: matias-cordon      
+    spec:
+      containers:
+        - name: app-matias-cordon
+          image: nowheremat/tarea-final:matias-cordon
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: APP_VERSION
+              value: "3.0.0"
+            - name: NODE_ENV
+              value: "production"
+            - name: AMBIENTE
+              valueFrom:
+                configMapKeyRef:
+                  name: config-matias-cordon
+                  key: AMBIENTE
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret-matias-cordon
+                  key: API_KEY
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "300m"
+              memory: "256Mi"
+
+---
+# ----------------------------------------------------------
+# 5. Service
+# ----------------------------------------------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-matias-cordon
+  namespace: ns-matias-cordon
+  labels:
+    app: matias-cordon
+spec:
+  selector:
+    app: matias-cordon         
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP

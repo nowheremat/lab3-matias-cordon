@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output (will be compiled fresh inside Docker)
+dist/
+
+# Dev & test
+coverage/
+*.spec.ts
+test/
+
+# Git
+.git/
+.gitignore
+
+# CI / IDE
+.github/
+.vscode/
+.idea/
+
+# Docs & lab files
+*.md
+evidencias/
+Jenkinsfile*
+entrega.yaml
+agent.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env files (never bake secrets into images)
+.env
+.env.*

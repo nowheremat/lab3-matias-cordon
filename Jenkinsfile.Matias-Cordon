@@ -1,0 +1,145 @@
+pipeline {
+
+    agent {
+        kubernetes {
+            yamlFile 'agent.yaml'
+            defaultContainer 'jnlp'
+        }
+    }
+
+    environment {
+        DOCKERHUB_USER  = 'nowheremat'          
+        GITHUB_USER     = 'nowheremat'              
+        IMAGE_NAME      = 'tarea-final'
+        IMAGE_TAG_NAME  = 'matias-cordon'                  
+        APP_VERSION     = '3.0.0'
+        IMAGE_FULL      = "${DOCKERHUB_USER}/${IMAGE_NAME}"
+        IMAGE_GHCR      = "ghcr.io/${GITHUB_USER}/${IMAGE_NAME}"
+
+        K8S_NAMESPACE   = 'ns-matias-cordon'
+        K8S_DEPLOYMENT  = 'app-matias-cordon'
+        K8S_MANIFEST    = 'entrega.yaml'
+
+        DOCKERHUB_CREDS = 'dockerhub-matias-cordon'
+        GITHUB_TOKEN_ID = 'github-token-matias-cordon'
+    }
+
+    options {
+        timestamps()
+        timeout(time: 30, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
+    stages {
+
+        stage('install') {
+            steps {
+                container('node') {
+                    echo "==> [install] Instalando dependencias con pnpm..."
+                    sh '''
+                        corepack enable
+                        corepack prepare pnpm@latest --activate
+                        pnpm install --frozen-lockfile
+                        echo "Dependencias instaladas."
+                    '''
+                }
+            }
+        }
+
+        stage('test') {
+            steps {
+                container('node') {
+                    echo "==> [test] Ejecutando unit tests y e2e tests..."
+                    sh '''
+                        pnpm run test
+                        pnpm run test:e2e
+                        echo "Todos los tests pasaron."
+                    '''
+                }
+            }
+        }
+
+        stage('build') {
+            steps {
+                container('docker') {
+                    echo "==> [build] Construyendo imagen Docker (multi-stage NestJS)..."
+                    sh """
+                        docker build \\
+                          -t ${IMAGE_FULL}:${IMAGE_TAG_NAME} \\
+                          -t ${IMAGE_FULL}:${APP_VERSION} \\
+                          -t ${IMAGE_GHCR}:${IMAGE_TAG_NAME} \\
+                          -t ${IMAGE_GHCR}:${APP_VERSION} \\
+                          .
+                        echo "Imágenes construidas:"
+                        docker images | grep ${IMAGE_NAME}
+                    """
+                }
+            }
+        }
+
+        stage('push') {
+            steps {
+                container('docker') {
+                    echo "==> [push] Publicando en Docker Hub..."
+                    withCredentials([usernamePassword(
+                        credentialsId: env.DOCKERHUB_CREDS,
+                        usernameVariable: 'DH_USER',
+                        passwordVariable: 'DH_PASS'
+                    )]) {
+                        sh """
+                            echo \$DH_PASS | docker login -u \$DH_USER --password-stdin
+                            docker push ${IMAGE_FULL}:${IMAGE_TAG_NAME}
+                            docker push ${IMAGE_FULL}:${APP_VERSION}
+                            docker logout
+                        """
+                    }
+
+                    echo "==> [push] Publicando en GitHub Container Registry..."
+                    withCredentials([string(
+                        credentialsId: env.GITHUB_TOKEN_ID,
+                        variable: 'GH_TOKEN'
+                    )]) {
+                        sh """
+                            echo \$GH_TOKEN | docker login ghcr.io -u ${GITHUB_USER} --password-stdin
+                            docker push ${IMAGE_GHCR}:${IMAGE_TAG_NAME}
+                            docker push ${IMAGE_GHCR}:${APP_VERSION}
+                            docker logout ghcr.io
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('deploy') {
+            steps {
+                container('kubectl') {
+                    echo "==> [deploy] Aplicando manifiestos en Kubernetes (Minikube)..."
+                    sh """
+                        kubectl apply -f ${K8S_MANIFEST}
+                        kubectl rollout status deployment/${K8S_DEPLOYMENT} \\
+                          -n ${K8S_NAMESPACE} --timeout=120s
+                        echo "--- Pods activos ---"
+                        kubectl get pods -n ${K8S_NAMESPACE}
+                        echo "--- Servicio ---"
+                        kubectl get svc -n ${K8S_NAMESPACE}
+                    """
+                }
+            }
+        }
+
+    }
+
+    post {
+        success {
+            echo """
+            Pipeline ok en build #${BUILD_NUMBER}.
+            """
+        }
+        failure {
+            echo "Pipeline falló en build #${BUILD_NUMBER}. Revisa los logs de cada stage."
+        }
+        always {
+            echo "Pipeline finalizado — ${currentBuild.currentResult}"
+        }
+    }
+}
