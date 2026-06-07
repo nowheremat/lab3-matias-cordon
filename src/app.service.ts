@@ -6,11 +6,10 @@ export class AppService {
     return 'Hello World!';
   }
 
-  getLabInfo(): { AMBIENTE: string | null; API_KEY: string | null; build: string } {
+  getLabInfo(): { AMBIENTE: string | null; API_KEY: string | null } {
     return {
       AMBIENTE: process.env.AMBIENTE ?? null,
       API_KEY: process.env.API_KEY ?? null,
-      build: "jenkin"
     };
   }
 }
