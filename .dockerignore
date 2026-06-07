@@ -3,6 +3,7 @@
 
 # Build output (will be compiled fresh inside Docker)
 dist/
+node_modules/
 
 # Dev & test
 coverage/
