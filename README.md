@@ -29,8 +29,8 @@ kubectl get nodes
 ### 4a. Build y push de la imagen Docker
 
 ```bash
-export DOCKERHUB_USER=TU_USUARIO
-export GITHUB_USER=TU_USUARIO_GITHUB
+export DOCKERHUB_USER=nowheremat 
+export GITHUB_USER=nowheremat
 
 docker build \
   -t $DOCKERHUB_USER/tarea-final:matias-cordon \
@@ -71,9 +71,9 @@ Ejecutar comandos para evidencias y finalmente darle con curl
 
 ### 6b. Crear el pipeline
 
-1. New Item → **Pipeline** → nombre: `Laboratorio3-Matias-Cordon`
-2. Pipeline → Definition: **Pipeline script from SCM**
-3. SCM: Git → URL de tu repositorio
+1. New Item → Pipeline → nombre: `Laboratorio3-Matias-Cordon`
+2. Pipeline → Definition: Pipeline script from SCM
+3. SCM: Git → URL del repositorio
 4. Script Path: `Jenkinsfile.Matias-Cordon`
 5. Guardar → **Build Now**
 
@@ -84,5 +84,6 @@ kubectl create clusterrolebinding jenkins-admin \
   --clusterrole=cluster-admin \
   --serviceaccount=jenkins:jenkins
 ```
+Este último lo usé cuándo me tiró un error de permisos jenkins
 
 ---

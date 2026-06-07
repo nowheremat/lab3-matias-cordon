@@ -1,0 +1,612 @@
+Started by user Jenkins Admin
+
+Obtained Jenkinsfile.Matias-Cordon from git https://github.com/nowheremat/lab3-matias-cordon.git
+[Pipeline] Start of Pipeline
+[Pipeline] readTrusted
+Obtained agent.yaml from git https://github.com/nowheremat/lab3-matias-cordon.git
+[Pipeline] podTemplate
+[Pipeline] {
+[Pipeline] node
+Created Pod: kubernetes jenkins/lab3-matias-cordon-11-vm9xm-34r3s-fl82j
+[PodInfo] jenkins/lab3-matias-cordon-11-vm9xm-34r3s-fl82j
+	Container [docker] waiting [ContainerCreating] No message
+	Container [jnlp] waiting [ContainerCreating] No message
+	Container [kubectl] waiting [ContainerCreating] No message
+	Container [node] waiting [ContainerCreating] No message
+	Pod [Pending][ContainersNotReady] containers with unready status: [jnlp node docker kubectl]
+Agent lab3-matias-cordon-11-vm9xm-34r3s-fl82j
+ is provisioned from template lab3-matias-cordon_11-vm9xm-34r3s
+---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    kubernetes.jenkins.io/last-refresh: "1780800018028"
+    buildUrl: "http://jenkins.jenkins.svc.cluster.local:8080/job/lab3-matias-cordon/11/"
+    runUrl: "job/lab3-matias-cordon/11/"
+  labels:
+    jenkins-agent: "matias-cordon"
+    jenkins/jenkins-jenkins-agent: "true"
+    jenkins/label-digest: "94239f3ffe89b20b9c69560b5da6e24621c06ad1"
+    jenkins/label: "lab3-matias-cordon_11-vm9xm"
+    kubernetes.jenkins.io/controller: "http___jenkins_jenkins_svc_cluster_local_8080x"
+  name: "lab3-matias-cordon-11-vm9xm-34r3s-fl82j"
+  namespace: "jenkins"
+spec:
+  containers:
+  - env:
+    - name: "JENKINS_SECRET"
+      value: "********"
+    - name: "JENKINS_TUNNEL"
+      value: "jenkins-agent.jenkins.svc.cluster.local:50000"
+    - name: "JENKINS_AGENT_NAME"
+      value: "lab3-matias-cordon-11-vm9xm-34r3s-fl82j"
+    - name: "REMOTING_OPTS"
+      value: "-noReconnectAfter 1d"
+    - name: "JENKINS_NAME"
+      value: "lab3-matias-cordon-11-vm9xm-34r3s-fl82j"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://jenkins.jenkins.svc.cluster.local:8080/"
+    image: "jenkins/inbound-agent:latest"
+    name: "jnlp"
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+      requests:
+        cpu: "200m"
+        memory: "256Mi"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - command:
+    - "cat"
+    image: "node:22-alpine"
+    name: "node"
+    resources:
+      limits:
+        cpu: "800m"
+        memory: "1Gi"
+      requests:
+        cpu: "300m"
+        memory: "512Mi"
+    tty: true
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - env:
+    - name: "DOCKER_TLS_CERTDIR"
+      value: ""
+    image: "docker:24-dind"
+    name: "docker"
+    resources:
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+      requests:
+        cpu: "300m"
+        memory: "512Mi"
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: "/var/lib/docker"
+      name: "docker-graph-storage"
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - command:
+    - "cat"
+    image: "alpine/k8s:1.31.2"
+    name: "kubectl"
+    resources:
+      limits:
+        cpu: "250m"
+        memory: "256Mi"
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+    tty: true
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  nodeSelector:
+    kubernetes.io/os: "linux"
+  restartPolicy: "Never"
+  serviceAccountName: "jenkins"
+  volumes:
+  - emptyDir: {}
+    name: "docker-graph-storage"
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Running on lab3-matias-cordon-11-vm9xm-34r3s-fl82j
+ in /home/jenkins/agent/workspace/lab3-matias-cordon
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/nowheremat/lab3-matias-cordon.git
+ > git init /home/jenkins/agent/workspace/lab3-matias-cordon # timeout=10
+Fetching upstream changes from https://github.com/nowheremat/lab3-matias-cordon.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.47.3'
+ > git fetch --tags --force --progress -- https://github.com/nowheremat/lab3-matias-cordon.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/nowheremat/lab3-matias-cordon.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+Avoid second fetch
+Checking out Revision a1bb7badbef43f5579e045cd1da1763c29877937 (refs/remotes/origin/main)
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f a1bb7badbef43f5579e045cd1da1763c29877937 # timeout=10
+Commit message: "Revert "test jekins""
+ > git rev-list --no-walk 434539b8b4a3a369834f94e5124c133f222f2e11 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] timeout
+Timeout set to expire in 30 min
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (install)
+[Pipeline] container
+[Pipeline] {
+[Pipeline] echo
+==> [install] Instalando dependencias con pnpm...
+[Pipeline] sh
++ corepack enable
++ corepack prepare pnpm@latest --activate
+Preparing pnpm@latest for immediate activation...
++ pnpm install --frozen-lockfile
+? Verifying lockfile against supply-chain policies (670 entries)...
+✓ Lockfile passes supply-chain policies (670 entries in 7.2s)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +643
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 643, reused 0, downloaded 0, added 0
+Progress: resolved 643, reused 0, downloaded 94, added 91
+Progress: resolved 643, reused 0, downloaded 196, added 182
+Progress: resolved 643, reused 0, downloaded 262, added 252
+Progress: resolved 643, reused 0, downloaded 421, added 415
+Progress: resolved 643, reused 0, downloaded 626, added 617
+Progress: resolved 643, reused 0, downloaded 643, added 643, done
+
+dependencies:
++ @nestjs/common 11.1.24
++ @nestjs/core 11.1.24
++ @nestjs/platform-express 11.1.24
++ reflect-metadata 0.2.2
++ rxjs 7.8.2
+
+devDependencies:
++ @eslint/eslintrc 3.3.5
++ @eslint/js 9.39.4
++ @nestjs/cli 11.0.21
++ @nestjs/schematics 11.1.0
++ @nestjs/testing 11.1.24
++ @types/express 5.0.6
++ @types/jest 30.0.0
++ @types/node 24.12.4
++ @types/supertest 7.2.0
++ eslint 9.39.4
++ eslint-config-prettier 10.1.8
++ eslint-plugin-prettier 5.5.6
++ globals 17.6.0
++ jest 30.4.2
++ prettier 3.8.3
++ source-map-support 0.5.21
++ supertest 7.2.2
++ ts-jest 29.4.11
++ ts-loader 9.6.0
++ ts-node 10.9.2
++ tsconfig-paths 4.2.0
++ typescript 5.9.3
++ typescript-eslint 8.60.0
+
+Done in 14.9s using pnpm v11.5.2
++ echo 'Dependencias instaladas.'
+Dependencias instaladas.
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (test)
+[Pipeline] container
+[Pipeline] {
+[Pipeline] echo
+==> [test] Ejecutando unit tests y e2e tests...
+[Pipeline] sh
++ pnpm run test
+$ jest
+PASS src/env-config.spec.ts
+PASS src/app.controller.spec.ts
+
+Test Suites: 2 passed, 2 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        2.092 s
+Ran all test suites.
++ pnpm run test:e2e
+$ jest --config ./test/jest-e2e.json
+PASS test/app.e2e-spec.ts
+  AppController (e2e)
+    ✓ / (GET) (100 ms)
+    ✓ /lab (GET) (7 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        1.011 s
+Ran all test suites.
++ echo 'Todos los tests pasaron.'
+Todos los tests pasaron.
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (build)
+[Pipeline] container
+[Pipeline] {
+[Pipeline] echo
+==> [build] Construyendo imagen Docker (multi-stage NestJS)...
+[Pipeline] sh
++ docker build -t nowheremat/tarea-final:matias-cordon -t nowheremat/tarea-final:3.0.0 -t ghcr.io/nowheremat/tarea-final:matias-cordon -t ghcr.io/nowheremat/tarea-final:3.0.0 .
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 696B done
+#1 DONE 0.0s
+
+#2 [internal] load .dockerignore
+#2 transferring context: 404B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/node:22-alpine
+#3 DONE 1.9s
+
+#4 [internal] load build context
+#4 transferring context: 216.66kB done
+#4 DONE 0.0s
+
+#5 [builder 1/8] FROM docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920
+#5 resolve docker.io/library/node:22-alpine@sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920 0.0s done
+#5 sha256:f805664cadb2f9bb0a2ff7d39ea97b2b55009f4a9478ce93db28c16cd15662fb 1.72kB / 1.72kB done
+#5 sha256:6c45ee1be58cecbe6593f699ef77e84b3fd7f6dc3b1547e18a28526cf04a5964 6.54kB / 6.54kB done
+#5 sha256:d17f077ada118cc762df373ff803592abf2dfa3ddafaa7381e364dd27a88fca7 0B / 4.20MB 0.1s
+#5 sha256:2d608f48b26f54edd7120a9b1cf8599d4b2a582c63819978e42ed2bd859f7f52 0B / 52.67MB 0.1s
+#5 sha256:fb91a13b2dbfd4b2a19e6e389616562c085b869987f1ada1f45813dcf0f38255 0B / 1.26MB 0.1s
+#5 sha256:968df39aedcea65eeb078fb336ed7191baf48f972b4479711397108be0966920 6.41kB / 6.41kB done
+#5 sha256:d17f077ada118cc762df373ff803592abf2dfa3ddafaa7381e364dd27a88fca7 4.20MB / 4.20MB 0.3s done
+#5 sha256:2d608f48b26f54edd7120a9b1cf8599d4b2a582c63819978e42ed2bd859f7f52 10.49MB / 52.67MB 0.3s
+#5 sha256:fb91a13b2dbfd4b2a19e6e389616562c085b869987f1ada1f45813dcf0f38255 1.26MB / 1.26MB 0.2s done
+#5 extracting sha256:d17f077ada118cc762df373ff803592abf2dfa3ddafaa7381e364dd27a88fca7
+#5 sha256:6b13dbc8524aa57a005ed0f5610a4a41934fcc551fd33fba10cc960691441ff0 0B / 444B 0.3s
+#5 sha256:2d608f48b26f54edd7120a9b1cf8599d4b2a582c63819978e42ed2bd859f7f52 22.02MB / 52.67MB 0.4s
+#5 sha256:2d608f48b26f54edd7120a9b1cf8599d4b2a582c63819978e42ed2bd859f7f52 38.80MB / 52.67MB 0.5s
+#5 sha256:6b13dbc8524aa57a005ed0f5610a4a41934fcc551fd33fba10cc960691441ff0 444B / 444B 0.4s done
+#5 sha256:2d608f48b26f54edd7120a9b1cf8599d4b2a582c63819978e42ed2bd859f7f52 43.44MB / 52.67MB 0.6s
+#5 extracting sha256:d17f077ada118cc762df373ff803592abf2dfa3ddafaa7381e364dd27a88fca7 0.3s done
+#5 extracting sha256:2d608f48b26f54edd7120a9b1cf8599d4b2a582c63819978e42ed2bd859f7f52
+#5 sha256:2d608f48b26f54edd7120a9b1cf8599d4b2a582c63819978e42ed2bd859f7f52 52.67MB / 52.67MB 0.7s done
+#5 extracting sha256:2d608f48b26f54edd7120a9b1cf8599d4b2a582c63819978e42ed2bd859f7f52 2.8s done
+#5 extracting sha256:fb91a13b2dbfd4b2a19e6e389616562c085b869987f1ada1f45813dcf0f38255
+#5 extracting sha256:fb91a13b2dbfd4b2a19e6e389616562c085b869987f1ada1f45813dcf0f38255 0.0s done
+#5 extracting sha256:6b13dbc8524aa57a005ed0f5610a4a41934fcc551fd33fba10cc960691441ff0 done
+#5 DONE 3.8s
+
+#6 [runtime 2/6] RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+#6 DONE 0.4s
+
+#7 [builder 2/8] RUN corepack enable && corepack prepare pnpm@latest --activate
+#7 ...
+
+#8 [runtime 3/6] WORKDIR /app
+#8 DONE 0.0s
+
+#7 [builder 2/8] RUN corepack enable && corepack prepare pnpm@latest --activate
+#7 0.541 Preparing pnpm@latest for immediate activation...
+#7 DONE 1.3s
+
+#9 [builder 3/8] WORKDIR /app
+#9 DONE 0.0s
+
+#10 [builder 4/8] COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+#10 DONE 0.0s
+
+#11 [builder 5/8] RUN CI=true pnpm install --frozen-lockfile
+#11 0.767 ? Verifying lockfile against supply-chain policies (670 entries)...
+#11 3.986 ✓ Lockfile passes supply-chain policies (670 entries in 3.2s)
+#11 3.988 Lockfile is up to date, resolution step is skipped
+#11 4.049 Progress: resolved 1, reused 0, downloaded 0, added 0
+#11 4.073 Packages: +643
+#11 4.073 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#11 5.050 Progress: resolved 643, reused 0, downloaded 129, added 110
+#11 6.050 Progress: resolved 643, reused 0, downloaded 361, added 350
+#11 7.050 Progress: resolved 643, reused 0, downloaded 643, added 638
+#11 7.051 Progress: resolved 643, reused 0, downloaded 643, added 643, done
+#11 7.464 
+#11 7.464 dependencies:
+#11 7.464 + @nestjs/common 11.1.24
+#11 7.464 + @nestjs/core 11.1.24
+#11 7.464 + @nestjs/platform-express 11.1.24
+#11 7.464 + reflect-metadata 0.2.2
+#11 7.464 + rxjs 7.8.2
+#11 7.464 
+#11 7.464 devDependencies:
+#11 7.464 + @eslint/eslintrc 3.3.5
+#11 7.464 + @eslint/js 9.39.4
+#11 7.464 + @nestjs/cli 11.0.21
+#11 7.464 + @nestjs/schematics 11.1.0
+#11 7.464 + @nestjs/testing 11.1.24
+#11 7.464 + @types/express 5.0.6
+#11 7.464 + @types/jest 30.0.0
+#11 7.464 + @types/node 24.12.4
+#11 7.464 + @types/supertest 7.2.0
+#11 7.464 + eslint 9.39.4
+#11 7.464 + eslint-config-prettier 10.1.8
+#11 7.464 + eslint-plugin-prettier 5.5.6
+#11 7.464 + globals 17.6.0
+#11 7.464 + jest 30.4.2
+#11 7.464 + prettier 3.8.3
+#11 7.464 + source-map-support 0.5.21
+#11 7.464 + supertest 7.2.2
+#11 7.464 + ts-jest 29.4.11
+#11 7.464 + ts-loader 9.6.0
+#11 7.464 + ts-node 10.9.2
+#11 7.464 + tsconfig-paths 4.2.0
+#11 7.464 + typescript 5.9.3
+#11 7.464 + typescript-eslint 8.60.0
+#11 7.464 
+#11 7.495 Done in 7.2s using pnpm v11.5.2
+#11 DONE 7.7s
+
+#12 [builder 6/8] COPY nest-cli.json tsconfig.json tsconfig.build.json ./
+#12 DONE 0.0s
+
+#13 [builder 7/8] COPY src/ ./src/
+#13 DONE 0.0s
+
+#14 [builder 8/8] RUN pnpm run build
+#14 0.550 $ nest build
+#14 DONE 4.0s
+
+#15 [runtime 4/6] COPY --from=builder /app/dist ./dist
+#15 DONE 0.0s
+
+#16 [runtime 5/6] COPY --from=builder /app/node_modules ./node_modules
+#16 DONE 1.6s
+
+#17 [runtime 6/6] COPY package.json ./
+#17 DONE 0.0s
+
+#18 exporting to image
+#18 exporting layers
+#18 exporting layers 1.6s done
+#18 writing image sha256:8499f82860fe05480e7deb36b5e3f42b6adf4fc4b122d1fa483052b87d423faa done
+#18 naming to docker.io/nowheremat/tarea-final:matias-cordon done
+#18 naming to docker.io/nowheremat/tarea-final:3.0.0 done
+#18 naming to ghcr.io/nowheremat/tarea-final:matias-cordon done
+#18 naming to ghcr.io/nowheremat/tarea-final:3.0.0 done
+#18 DONE 1.6s
+WARNING: current commit information was not captured by the build: failed to read current commit information with git rev-parse --is-inside-work-tree
++ echo 'Imágenes construidas:'
+Imágenes construidas:
++ docker images+ grep tarea-final
+
+nowheremat/tarea-final           3.0.0           8499f82860fe   1 second ago   281MB
+nowheremat/tarea-final           matias-cordon   8499f82860fe   1 second ago   281MB
+ghcr.io/nowheremat/tarea-final   3.0.0           8499f82860fe   1 second ago   281MB
+ghcr.io/nowheremat/tarea-final   matias-cordon   8499f82860fe   1 second ago   281MB
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (push)
+[Pipeline] container
+[Pipeline] {
+[Pipeline] echo
+==> [push] Publicando en Docker Hub...
+[Pipeline] withCredentials
+Masking supported pattern matches of $DH_PASS
+[Pipeline] {
+[Pipeline] sh
++ echo ****
++ docker login -u nowheremat --password-stdin
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
++ docker push nowheremat/tarea-final:matias-cordon
+The push refers to repository [docker.io/nowheremat/tarea-final]
+d444aab92d2b: Preparing
+2d506076843d: Preparing
+1eba6469e825: Preparing
+7683325db70b: Preparing
+3a21685c8c18: Preparing
+df4c667f4db5: Preparing
+1aff0fb07419: Preparing
+5aa7103c57e0: Preparing
+a8d26d037006: Preparing
+df4c667f4db5: Waiting
+1aff0fb07419: Waiting
+a8d26d037006: Waiting
+5aa7103c57e0: Waiting
+3a21685c8c18: Pushed
+d444aab92d2b: Pushed
+7683325db70b: Pushed
+df4c667f4db5: Layer already exists
+1aff0fb07419: Layer already exists
+1eba6469e825: Pushed
+5aa7103c57e0: Layer already exists
+a8d26d037006: Layer already exists
+2d506076843d: Pushed
+matias-cordon: digest: sha256:f653a34f48412602c6fcd496a705648ac6ef0e1a9085389c9436231398f9cb32 size: 2199
++ docker push nowheremat/tarea-final:3.0.0
+The push refers to repository [docker.io/nowheremat/tarea-final]
+d444aab92d2b: Preparing
+2d506076843d: Preparing
+1eba6469e825: Preparing
+7683325db70b: Preparing
+3a21685c8c18: Preparing
+df4c667f4db5: Preparing
+1aff0fb07419: Preparing
+5aa7103c57e0: Preparing
+a8d26d037006: Preparing
+1aff0fb07419: Waiting
+5aa7103c57e0: Waiting
+a8d26d037006: Waiting
+df4c667f4db5: Waiting
+3a21685c8c18: Layer already exists
+d444aab92d2b: Layer already exists
+7683325db70b: Layer already exists
+1eba6469e825: Layer already exists
+2d506076843d: Layer already exists
+df4c667f4db5: Layer already exists
+1aff0fb07419: Layer already exists
+5aa7103c57e0: Layer already exists
+a8d26d037006: Layer already exists
+3.0.0: digest: sha256:f653a34f48412602c6fcd496a705648ac6ef0e1a9085389c9436231398f9cb32 size: 2199
++ docker logout
+Removing login credentials for https://index.docker.io/v1/
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] echo
+==> [push] Publicando en GitHub Container Registry...
+[Pipeline] withCredentials
+Masking supported pattern matches of $GH_TOKEN
+[Pipeline] {
+[Pipeline] sh
++ + dockerecho login **** ghcr.io -u nowheremat --password-stdin
+
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
++ docker push ghcr.io/nowheremat/tarea-final:matias-cordon
+The push refers to repository [ghcr.io/nowheremat/tarea-final]
+d444aab92d2b: Preparing
+2d506076843d: Preparing
+1eba6469e825: Preparing
+7683325db70b: Preparing
+3a21685c8c18: Preparing
+df4c667f4db5: Preparing
+1aff0fb07419: Preparing
+5aa7103c57e0: Preparing
+a8d26d037006: Preparing
+df4c667f4db5: Waiting
+1aff0fb07419: Waiting
+5aa7103c57e0: Waiting
+a8d26d037006: Waiting
+d444aab92d2b: Pushed
+7683325db70b: Pushed
+1eba6469e825: Pushed
+3a21685c8c18: Pushed
+1aff0fb07419: Layer already exists
+df4c667f4db5: Layer already exists
+5aa7103c57e0: Layer already exists
+a8d26d037006: Layer already exists
+2d506076843d: Pushed
+matias-cordon: digest: sha256:f653a34f48412602c6fcd496a705648ac6ef0e1a9085389c9436231398f9cb32 size: 2199
++ docker push ghcr.io/nowheremat/tarea-final:3.0.0
+The push refers to repository [ghcr.io/nowheremat/tarea-final]
+d444aab92d2b: Preparing
+2d506076843d: Preparing
+1eba6469e825: Preparing
+7683325db70b: Preparing
+3a21685c8c18: Preparing
+df4c667f4db5: Preparing
+1aff0fb07419: Preparing
+5aa7103c57e0: Preparing
+a8d26d037006: Preparing
+df4c667f4db5: Waiting
+1aff0fb07419: Waiting
+5aa7103c57e0: Waiting
+a8d26d037006: Waiting
+2d506076843d: Layer already exists
+1eba6469e825: Layer already exists
+3a21685c8c18: Layer already exists
+7683325db70b: Layer already exists
+d444aab92d2b: Layer already exists
+1aff0fb07419: Layer already exists
+df4c667f4db5: Layer already exists
+5aa7103c57e0: Layer already exists
+a8d26d037006: Layer already exists
+3.0.0: digest: sha256:f653a34f48412602c6fcd496a705648ac6ef0e1a9085389c9436231398f9cb32 size: 2199
++ docker logout ghcr.io
+Removing login credentials for ghcr.io
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (deploy)
+[Pipeline] container
+[Pipeline] {
+[Pipeline] echo
+==> [deploy] Aplicando manifiestos en Kubernetes (Minikube)...
+[Pipeline] sh
++ kubectl apply -f entrega.yaml
+namespace/ns-matias-cordon unchanged
+configmap/config-matias-cordon unchanged
+secret/secret-matias-cordon unchanged
+deployment.apps/app-matias-cordon unchanged
+service/svc-matias-cordon unchanged
++ kubectl rollout status deployment/app-matias-cordon -n ns-matias-cordon '--timeout=120s'
+deployment "app-matias-cordon" successfully rolled out
++ echo '--- Pods activos ---'
+--- Pods activos ---
++ kubectl get pods -n ns-matias-cordon
+NAME                                 READY   STATUS    RESTARTS   AGE
+app-matias-cordon-78c9dc48fd-7lzw2   1/1     Running   0          30m
+app-matias-cordon-78c9dc48fd-l2gh2   1/1     Running   0          30m
++ echo '--- Servicio ---'
+--- Servicio ---
++ kubectl get svc -n ns-matias-cordon
+NAME                TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+svc-matias-cordon   ClusterIP   10.102.44.206   <none>        80/TCP    46h
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+Pipeline finalizado — SUCCESS
+[Pipeline] echo
+
+            Pipeline ok en build #11.
+            
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // timeout
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // podTemplate
+[Pipeline] End of Pipeline
+Finished: SUCCESS
