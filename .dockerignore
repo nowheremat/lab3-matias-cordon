@@ -1,5 +1,4 @@
 # Dependencies
-node_modules/
 .pnpm-store/
 
 # Build output (will be compiled fresh inside Docker)

@@ -1,29 +1,17 @@
-# ── Stage 1: build ──────────────────────────────────────────
-FROM node:22-alpine AS builder
+FROM node:22-alpine
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm install --frozen-lockfile
-
 COPY nest-cli.json tsconfig.json tsconfig.build.json ./
 COPY src/ ./src/
-RUN pnpm run build
+COPY node_modules/ ./node_modules/
 
-RUN pnpm prune --prod
-
-FROM node:22-alpine AS runtime
-
-WORKDIR /app
+RUN pnpm run build && pnpm prune --prod
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules ./node_modules
-COPY package.json ./
-
 USER appuser
 
 ENV PORT=3000
