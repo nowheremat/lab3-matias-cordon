@@ -11,7 +11,7 @@ export class AppController {
   }
 
   @Get('lab')
-  getLab(): { AMBIENTE: string | null; API_KEY: string | null } {
+  getLab(): { AMBIENTE: string | null; API_KEY: string | null; build: string | null } {
     return this.appService.getLabInfo();
   }
 }
