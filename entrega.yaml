@@ -58,7 +58,7 @@ spec:
       containers:
         - name: app-matias-cordon
           image: nowheremat/tarea-final:matias-cordon
-          imagePullPolicy: Never
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:
