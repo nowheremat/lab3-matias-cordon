@@ -9,7 +9,9 @@ COPY nest-cli.json tsconfig.json tsconfig.build.json ./
 COPY src/ ./src/
 COPY node_modules/ ./node_modules/
 
-RUN pnpm run build && pnpm prune --prod
+ENV CI=true
+
+RUN pnpm run build
 
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
