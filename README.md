@@ -86,4 +86,9 @@ kubectl create clusterrolebinding jenkins-admin \
 ```
 Este último lo usé cuándo me tiró un error de permisos jenkins
 
+### 7. Notas
+
+- Se subieron las imagenes en docker hub y github
+- pero en entrega.yaml se usa la de docker hub
+- https://github.com/nowheremat/lab3-matias-cordon
 ---
